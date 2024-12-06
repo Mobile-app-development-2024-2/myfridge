@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -35,6 +36,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +46,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import com.example.myfridge.R
+import com.example.myfridge.ui.theme.MintBlue
+import com.example.myfridge.ui.theme.MintWhite
 
 @Composable
 fun SignInScreen(navController: NavController) {
@@ -58,75 +63,94 @@ fun SignInScreen(navController: NavController) {
 
     val context = LocalContext.current
     LaunchedEffect(key1 = uiState.value) {
-        when(uiState.value) {
+        when (uiState.value) {
             is SignInState.Success -> {
                 navController.navigate("home") {
                     popUpTo("login") { inclusive = true }
                 }
             }
+
             is SignInState.Error -> {
                 Toast.makeText(context, "Sign In Failed", Toast.LENGTH_SHORT).show()
             }
+
             else -> {}
         }
     }
-    Scaffold(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = MintBlue
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
+                .padding(it)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row {
-                Text(
-                    text = "LOGIN",
-                    fontSize = 28.sp,
-                    color = Color(0xFF01D1C4)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.login_mascot),
-                    contentDescription = "Login Mascot",
-                    modifier = Modifier.size(120.dp)
-                )
-            }
-            Spacer(modifier = Modifier.size(24.dp))
-            TextField(
-                value = email,
-                onValueChange = { email = it },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(16.dp),
-                label = { Text(text = "아이디") }
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            TextField(
-                value = password,
-                onValueChange = { password = it },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(16.dp),
-                label = { Text(text = "비밀번호") }
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Button(
-                onClick = { viewModel.signIn(email, password) },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(8.dp),
+            Column(
+                modifier = Modifier
+                    .background(color = MintWhite, shape = RoundedCornerShape(size = 50.dp))
+                    .padding(start = 21.dp, top = 72.dp, end = 21.dp, bottom = 72.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(text = "이메일로 로그인하기")
-            }
-            Spacer(modifier = Modifier.size(8.dp))
-            TextButton(
-                onClick = { navController.navigate("signup") },
-                modifier = Modifier.align(alignment = Alignment.End)
-            ) {
-                Text(text = "회원이 아니신가요?")
-            }
-            Row(modifier = Modifier.align(alignment = Alignment.End)) {
-                TextButton(onClick = { /** todo */ }) {
-                    Text(text = "계정 찾기")
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = "LOGIN",
+                        style = TextStyle(
+                            fontSize = 40.sp,
+                            lineHeight = 40.sp,
+                            fontWeight = FontWeight(400),
+                            color = MintBlue,
+                        )
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.login_mascot),
+                        contentDescription = null,
+                        modifier = Modifier.size(100.dp)
+                    )
                 }
-                TextButton(onClick = { /** todo */ }) {
-                    Text(text = "비밀번호 찾기")
+                Spacer(modifier = Modifier.size(32.dp))
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    label = { Text(text = "Email") }
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    label = { Text(text = "Password") },
+                    visualTransformation = PasswordVisualTransformation()
+                )
+                Spacer(modifier = Modifier.size(16.dp))
+                if (uiState.value == SignInState.Loading) {
+                    CircularProgressIndicator()
+                } else {
+                    Button(
+                        onClick = { viewModel.signIn(email, password) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MintBlue
+                        )
+                    ) {
+                        Text(text = stringResource(id = R.string.signin))
+                    }
+
+                    TextButton(onClick = { navController.navigate("signup") }) {
+                        Text(text = stringResource(id = R.string.signintext))
+                    }
                 }
             }
         }
