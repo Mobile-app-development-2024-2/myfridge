@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "381659251397",
+    "project_id": "tempmyfridge",
+    "storage_bucket": "tempmyfridge.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381659251397:android:0aa54336921ae989ac26ac",
+        "android_client_info": {
+          "package_name": "com.example.myfridge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd3nK0vUHru4_6C1mt9yYfmm2Y9i_zqWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
