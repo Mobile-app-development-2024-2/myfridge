@@ -108,8 +108,13 @@ fun EssentialsListScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.size(32.dp))
 
+            val filteredList = if (searchQ.isEmpty()) {
+                essentialsList
+            } else {
+                essentialsList.filter { it.what.contains(searchQ, ignoreCase = true) }
+            }
 
-            essentialsList.forEach { item ->
+            filteredList.forEach { item ->
 
                 Box(
                     modifier = Modifier
@@ -118,7 +123,7 @@ fun EssentialsListScreen(navController: NavController) {
                         .background(MintWhite)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-                            println("$item clicked")
+                            navController.navigate("essentialsSingle?value=" + item.id)
                         },
                 ) {
                     Text(
