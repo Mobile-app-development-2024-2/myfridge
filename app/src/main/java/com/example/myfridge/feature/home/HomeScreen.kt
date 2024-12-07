@@ -18,16 +18,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -73,26 +74,35 @@ fun HomeScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MintWhite,
+        contentColor = MintWhite,
         topBar = {
-            TopAppBar(
-                modifier = Modifier.height(100.dp),
-                title = {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_myfridge),
-                        contentDescription = "image description",
-                        modifier = Modifier.size(80.dp)
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { viewModel.signOut() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                            contentDescription = "Logout",
-                            modifier = Modifier.size(50.dp)
+            Column {
+                TopAppBar(
+                    modifier = Modifier.height(100.dp),
+                    colors = TopAppBarDefaults.topAppBarColors(MintWhite),
+                    title = {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo_myfridge),
+                            contentDescription = "image description",
+                            modifier = Modifier.size(100.dp)
                         )
+                    },
+                    actions = {
+                        IconButton(onClick = { viewModel.signOut() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                contentDescription = "Logout",
+                                modifier = Modifier.size(50.dp)
+                            )
+                        }
                     }
-                },
-            )
+                )
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = Color.Gray
+                )
+            }
         }
     ) {
         Column(
@@ -119,13 +129,13 @@ fun HomeScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp) // 여백 조정
+                .padding(16.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ocr_camera), // 이미지 설정
+                painter = painterResource(id = R.drawable.ocr_camera),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(160.dp)
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
                     .clickable {
@@ -144,78 +154,87 @@ fun ButtonGroup(
 ) {
     val buttons = listOf(1, 2, 3, 4)
     val buttonLabels = listOf("식재료\n모아보기", "생필품\n모아보기", "장보기\n계획하기", "레시피\n아이디어")
+    val buttonImages = listOf(
+        R.drawable.logo_food,
+        R.drawable.logo_essentials,
+        R.drawable.logo_shop,
+        R.drawable.logo_kitchen
+    )
 
     val animationOffsets = buttons.map { buttonLabel ->
         animateDpAsState(targetValue = if (selectedButton == buttonLabel) (-80).dp else (-180).dp)
     }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        buttons.forEachIndexed { index, buttonLabel ->
-            Button(
-                onClick = {
-                    if (selectedButton == buttonLabel) {
-                        when (buttonLabel) {
-                            1 -> navController.navigate("page1")
+    buttons.forEachIndexed { index, buttonLabel ->
+        Button(
+            onClick = {
+                if (selectedButton == buttonLabel) {
+                    when (buttonLabel) {
+                        1 -> navController.navigate("page1")
 
-                            2 -> navController.navigate("essentialsList") {
-                                popUpTo("home") { inclusive = true }
-                            }
-                            3 -> navController.navigate("page3")
-                            4 -> navController.navigate("page4")
+                        2 -> navController.navigate("essentialsList") {
+                            popUpTo("home") { inclusive = true }
                         }
-                        onClick(null)
-                    } else {
-                        onClick(buttonLabel)
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
-                    .padding(horizontal = 30.dp)
-                    .padding(vertical = 12.dp)
-                    .offset(x = animationOffsets[index].value),
-                colors = ButtonDefaults.buttonColors(containerColor = MintBlue),
-                shape = RoundedCornerShape(20.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 5.dp, horizontal = 20.dp)
-                            .background(
-                                color = MintWhite,
-                                shape = RoundedCornerShape(
-                                    topStart = 120.dp,
-                                    topEnd = 20.dp,
-                                    bottomStart = 20.dp,
-                                    bottomEnd = 20.dp
-                                )
-                            ),
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.mini_fridge),
-                            contentDescription = "image description",
-                            modifier = Modifier.size(80.dp)
-                        )
-                        Text(
-                            text = buttonLabels[index],
-                            modifier = Modifier.padding(24.dp),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = DeepGreen,
-                            lineHeight = 30.sp,
-                            textAlign = TextAlign.Center
-                        )
 
+                        3 -> navController.navigate("page3")
+                        4 -> navController.navigate("page4")
                     }
+                    onClick(null)
+                } else {
+                    onClick(buttonLabel)
                 }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .padding(horizontal = 30.dp)
+                .padding(vertical = 12.dp)
+                .offset(x = animationOffsets[index].value),
+            colors = ButtonDefaults.buttonColors(containerColor = MintBlue),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 5.dp, horizontal = 20.dp)
+                    .background(
+                        color = MintWhite,
+                        shape = RoundedCornerShape(
+                            topStart = 120.dp,
+                            topEnd = 20.dp,
+                            bottomStart = 20.dp,
+                            bottomEnd = 20.dp
+                        )
+                    ),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.mini_fridge),
+                    contentDescription = "image description",
+                    modifier = Modifier
+                        .size(80.dp)
+                        .align(Alignment.BottomStart)
+                )
+
+                Text(
+                    text = buttonLabels[index],
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(horizontal = 36.dp),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = DeepGreen,
+                    lineHeight = 30.sp
+                )
+
+                Image(
+                    painter = painterResource(id = buttonImages[index]),
+                    contentDescription = "image description",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .align(Alignment.BottomEnd)
+                        .offset(x = 45.dp)
+                )
+
 
             }
         }

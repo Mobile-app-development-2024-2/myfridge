@@ -112,7 +112,7 @@ fun SignInScreen(navController: NavController) {
                         )
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.login_mascot),
+                        painter = painterResource(id = R.drawable.logo_fridge),
                         contentDescription = null,
                         modifier = Modifier.size(100.dp)
                     )

@@ -58,7 +58,7 @@ fun AddNewItemScreen(navController: NavController) {
                     )
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { navController.navigate("home") }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -91,13 +91,13 @@ fun AddNewItemScreen(navController: NavController) {
                 onClick = {  },
                 modifier = Modifier
                     .size(200.dp)
-                    .graphicsLayer(rotationZ = 25f),
+                    .graphicsLayer(rotationZ = 15f),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonColors(
                     contentColor = MintBlue,
-                    containerColor = MintWhite,
+                    containerColor = Color.White,
                     disabledContentColor = MintBlue,
-                    disabledContainerColor = MintWhite
+                    disabledContainerColor = Color.White
                 )
             ) {
                 Column(
@@ -124,7 +124,7 @@ fun AddNewItemScreen(navController: NavController) {
                     .height(4.dp)
                     .background(
                         brush = Brush.linearGradient(
-                            colors = listOf(Color.Transparent, MintWhite, Color.Transparent)
+                            colors = listOf(Color.Transparent, Color.White, Color.Transparent)
                         )
                     )
             )
@@ -133,13 +133,13 @@ fun AddNewItemScreen(navController: NavController) {
                 onClick = { navController.navigate("essentialsRegister") },
                 modifier = Modifier
                     .size(200.dp)
-                    .graphicsLayer(rotationZ = 335f),
+                    .graphicsLayer(rotationZ = -15f),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonColors(
                     contentColor = MintBlue,
-                    containerColor = MintWhite,
+                    containerColor = Color.White,
                     disabledContentColor = MintBlue,
-                    disabledContainerColor = MintWhite
+                    disabledContainerColor = Color.White
                 )
             ) {
                 Column(
@@ -147,7 +147,7 @@ fun AddNewItemScreen(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.logo_food),
+                        painter = painterResource(id = R.drawable.logo_essentials),
                         contentDescription = "image description",
                         modifier = Modifier.size(100.dp)
                     )
