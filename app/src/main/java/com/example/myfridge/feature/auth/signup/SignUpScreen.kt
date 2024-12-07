@@ -162,7 +162,7 @@ fun SignUpScreen(navController: NavController) {
                     ) {
                         Text(text = stringResource(id = R.string.signup))
                     }
-                    TextButton(onClick = { }) {
+                    TextButton(onClick = { navController.navigateUp() }) {
                         Text(text = stringResource(id = R.string.signuptext))
                     }
 
