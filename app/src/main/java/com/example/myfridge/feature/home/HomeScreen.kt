@@ -170,7 +170,9 @@ fun ButtonGroup(
             onClick = {
                 if (selectedButton == buttonLabel) {
                     when (buttonLabel) {
-                        1 -> navController.navigate("page1")
+                        1 -> navController.navigate("foodList") {
+                            popUpTo("home") { inclusive = true }
+                        }
 
                         2 -> navController.navigate("essentialsList") {
                             popUpTo("home") { inclusive = true }
