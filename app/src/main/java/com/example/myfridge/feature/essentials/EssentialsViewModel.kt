@@ -14,25 +14,25 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class EssentialsViewModel @Inject constructor() : ViewModel()  {
+class EssentialsViewModel @Inject constructor() : ViewModel() {
 
     private val _essentialsList = MutableStateFlow<List<Essentials>>(emptyList())
     val essentialsList = _essentialsList.asStateFlow()
 
-    private val _essentialsOne = MutableStateFlow<Essentials>(Essentials())
-    val essentialsOne = _essentialsOne.asStateFlow()
+//    private val _essentialsOne = MutableStateFlow<Essentials>(Essentials())
+//    val essentialsOne = _essentialsOne.asStateFlow()
     private val firebaseDatabase = Firebase.database
 
     private val _state = MutableStateFlow<EssentialsState>(EssentialsState.Nothing)
     val state = _state.asStateFlow()
 
-    fun addEssentials(userEmail: String, what: String, where: String, price: String) {
-        val essentials = Essentials (
+    fun addEssentials(userEmail: String, ename: String, eplace: String, eprice: String) {
+        val essentials = Essentials(
             id = firebaseDatabase.reference.child("essentials").push().key ?: UUID.randomUUID().toString(),
             userEmail = userEmail,
-            what = what,
-            where = where,
-            price = price
+            ename = ename,
+            eplace = eplace,
+            eprice = eprice
         )
         firebaseDatabase.reference.child("essentials").child(essentials.id).setValue(essentials)
             .addOnCompleteListener { task ->
@@ -64,21 +64,21 @@ class EssentialsViewModel @Inject constructor() : ViewModel()  {
             })
     }
 
-    fun listenForSingleEssentials(id: String) {
-        firebaseDatabase.reference.child("essentials")
-            .orderByChild("id")
-            .equalTo(id)
-            .limitToFirst(1)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val essentials: Essentials? = snapshot.children.firstOrNull()?.getValue(Essentials::class.java)
-                    essentials?.let { _essentialsOne.value = it }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-
-    }
+//    fun listenForSingleEssentials(id: String) {
+//        firebaseDatabase.reference.child("essentials")
+//            .orderByChild("id")
+//            .equalTo(id)
+//            .limitToFirst(1)
+//            .addValueEventListener(object : ValueEventListener {
+//                override fun onDataChange(snapshot: DataSnapshot) {
+//                    val essentials: Essentials? = snapshot.children.firstOrNull()?.getValue(Essentials::class.java)
+//                    essentials?.let { _essentialsOne.value = it }
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {}
+//            })
+//
+//    }
 
 }
 

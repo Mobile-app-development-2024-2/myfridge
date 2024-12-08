@@ -11,14 +11,15 @@ import com.example.myfridge.feature.auth.signin.SignInScreen
 import com.example.myfridge.feature.auth.signup.SignUpScreen
 import com.example.myfridge.feature.essentials.EssentialsListScreen
 import com.example.myfridge.feature.essentials.EssentialsRegisterScreen
-import com.example.myfridge.feature.essentials.EssentialsSingleScreen
 import com.example.myfridge.feature.food.FoodListScreen
+import com.example.myfridge.feature.food.FoodRegisterScreen
 import com.example.myfridge.feature.home.AddNewItemScreen
 import com.example.myfridge.feature.home.HomeScreen
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun MainApp() {
+
     Surface(modifier = Modifier.fillMaxSize()) {
         val navController = rememberNavController()
         val currentUser = FirebaseAuth.getInstance().currentUser
@@ -35,22 +36,20 @@ fun MainApp() {
                 HomeScreen(navController = navController)
             }
 
+            composable(route = "addNewItem") {
+                AddNewItemScreen(navController = navController)
+            }
+
             composable(route = "essentialsRegister") {
                 EssentialsRegisterScreen(navController = navController)
             }
             composable(route = "essentialsList") {
                 EssentialsListScreen(navController = navController)
             }
-            composable(route = "essentialsSingle?value={value}") { v ->
-                val value = v.arguments?.getString("value")
-                if (value != null) {
-                    EssentialsSingleScreen(navController = navController, itemId = value)
-                }
-            }
-            composable(route = "addNewItem") {
-                AddNewItemScreen(navController = navController)
-            }
 
+            composable(route = "foodRegister") {
+                FoodRegisterScreen(navController = navController)
+            }
             composable(route = "foodList") {
                 FoodListScreen(navController = navController)
             }

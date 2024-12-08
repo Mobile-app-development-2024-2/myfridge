@@ -19,8 +19,8 @@ class FoodViewModel @Inject constructor() : ViewModel() {
     private val _foodList = MutableStateFlow<List<Food>>(emptyList())
     val foodList = _foodList.asStateFlow()
 
-    private val _foodOne = MutableStateFlow<Food>(Food())
-    val foodOne = _foodOne.asStateFlow()
+//    private val _foodOne = MutableStateFlow<Food>(Food())
+//    val foodOne = _foodOne.asStateFlow()
     private val firebaseDatabase = Firebase.database
 
     private val _state = MutableStateFlow<FoodState>(FoodState.Nothing)
@@ -66,22 +66,22 @@ class FoodViewModel @Inject constructor() : ViewModel() {
             })
     }
 
-    fun listenForSingleFood(id: String) {
-        firebaseDatabase.reference.child("food")
-            .orderByChild("id")
-            .equalTo(id)
-            .limitToFirst(1)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val food: Food? = snapshot.children.firstOrNull()?.getValue(
-                        Food::class.java)
-                    food?.let { _foodOne.value = it }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-
-    }
+//    fun listenForSingleFood(id: String) {
+//        firebaseDatabase.reference.child("food")
+//            .orderByChild("id")
+//            .equalTo(id)
+//            .limitToFirst(1)
+//            .addValueEventListener(object : ValueEventListener {
+//                override fun onDataChange(snapshot: DataSnapshot) {
+//                    val food: Food? = snapshot.children.firstOrNull()?.getValue(
+//                        Food::class.java)
+//                    food?.let { _foodOne.value = it }
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {}
+//            })
+//
+//    }
 
 }
 

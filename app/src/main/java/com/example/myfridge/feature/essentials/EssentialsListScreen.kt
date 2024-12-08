@@ -1,14 +1,20 @@
 package com.example.myfridge.feature.essentials
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -16,9 +22,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
@@ -33,17 +39,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.myfridge.ui.theme.MintBlue
+import com.example.myfridge.R
+import com.example.myfridge.ui.theme.DeepGreen
 import com.example.myfridge.ui.theme.MintWhite
+import com.example.myfridge.ui.theme.fontMint
 import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EssentialsListScreen(navController: NavController) {
+
     val currentUser = FirebaseAuth.getInstance().currentUser
     val userEmail = currentUser?.email ?: ""
 
@@ -53,87 +66,133 @@ fun EssentialsListScreen(navController: NavController) {
     }
 
     val essentialsList by viewModel.essentialsList.collectAsState(emptyList())
-
-    var searchQ by remember { mutableStateOf("") }
+    var searchWhat by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = MintBlue,
+        containerColor = MintWhite,
         topBar = {
             TopAppBar(
-                modifier = Modifier
-                    .clip(
-                        RoundedCornerShape(
-                            bottomStart = 16.dp,
-                            bottomEnd = 16.dp
-                        )
-                    ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = topAppBarColors(
-                    containerColor = MintWhite,
-                    titleContentColor = MintBlue
-                ),
                 title = {
                     Text(
-                        text = "생필품 리스트",
+                        text = stringResource(id = R.string.eList),
+                        color = fontMint,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
-
-                }
-
+                },
+                colors = topAppBarColors(MintWhite)
             )
         }
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(16.dp)
         ) {
-
-            OutlinedTextField(
-                value = searchQ,
-                onValueChange = { searchQ = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(text = "Search") },
+            TextField(
+                value = searchWhat,
+                onValueChange = { searchWhat = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                label = { Text(text = stringResource(id = R.string.search)) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White
+                    containerColor = Color.White,
+                    disabledBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    unfocusedLabelColor = fontMint,
+                    focusedLabelColor = fontMint
                 )
             )
-            Spacer(modifier = Modifier.size(32.dp))
+            Spacer(modifier = Modifier.size(16.dp))
 
-            val filteredList = if (searchQ.isEmpty()) {
+            val filteredList = if (searchWhat.isEmpty()) {
                 essentialsList
             } else {
-                essentialsList.filter { it.what.contains(searchQ, ignoreCase = true) }
+                essentialsList.filter { it.ename.contains(searchWhat, ignoreCase = true) }
             }
 
-            filteredList.forEach { item ->
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .background(MintWhite)
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable {
-                            navController.navigate("essentialsSingle?value=" + item.id)
-                        },
-                ) {
-                    Text(
-                        text = item.what,
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(filteredList) { item ->
+                    Box(
                         modifier = Modifier
-                            .padding(16.dp)
-                            .align(Alignment.Center)
-                    )
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .clickable {
+                                // 단일 페이지
+                            },
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.logo_essentials),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .padding(vertical = 5.dp, horizontal = 10.dp)
+                                    .align(Alignment.CenterVertically)
+                            )
+                            Column(
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            ) {
+                                Text(
+                                    text = item.ename,
+                                    color = DeepGreen,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Image(
+                                    painter = painterResource(id = R.drawable.mini_dotted_line),
+                                    contentDescription = null
+                                )
+                                Text(
+                                    text = item.eprice + "원에 구매하셨습니다.",
+                                    color = DeepGreen
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Image(
+                                painter = painterResource(id = R.drawable.pointer),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .padding(16.dp)
+                            )
+                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.dotted_line2),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp)
+                                .padding(1.dp)
+                        )
+
+                    }
                 }
             }
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun EssentialsListScreenPreview() {
+    val context = LocalContext.current
+    val mockNavController = remember { NavController(context) }
+
+    EssentialsListScreen(navController = mockNavController)
 }

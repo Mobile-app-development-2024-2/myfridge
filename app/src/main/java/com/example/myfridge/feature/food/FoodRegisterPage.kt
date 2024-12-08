@@ -1,4 +1,4 @@
-package com.example.myfridge.feature.essentials
+package com.example.myfridge.feature.food
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -51,30 +51,31 @@ import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EssentialsRegisterScreen(navController: NavController) {
+fun FoodRegisterScreen(navController: NavController) {
     val currentUser = FirebaseAuth.getInstance().currentUser
     val userEmail = currentUser?.email ?: ""
 
-    val viewModel: EssentialsViewModel = hiltViewModel()
+    val viewModel: FoodViewModel = hiltViewModel()
     LaunchedEffect(key1 = true) {
-        viewModel.listenForEssentials(userEmail)
+        viewModel.listenForFood(userEmail)
     }
 
-    var ename by remember { mutableStateOf("") }
-    var eplace by remember { mutableStateOf("") }
-    var eprice by remember { mutableStateOf("") }
+    var fname by remember { mutableStateOf("") }
+    var expDate by remember { mutableStateOf("") }
+    var fplace by remember { mutableStateOf("") }
+    var fprice by remember { mutableStateOf("") }
 
     //success/fail message
     val uiState = viewModel.state.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(key1 = uiState.value) {
         when (uiState.value) {
-            is EssentialsState.Success -> {
+            is FoodState.Success -> {
                 Toast.makeText(context, "Register Success", Toast.LENGTH_SHORT).show()
-                navController.navigate("essentialsRegister")
+                navController.navigate("foodRegister")
             }
 
-            is EssentialsState.Error -> {
+            is FoodState.Error -> {
                 Toast.makeText(context, "Register Failed", Toast.LENGTH_SHORT).show()
             }
 
@@ -100,7 +101,7 @@ fun EssentialsRegisterScreen(navController: NavController) {
                 },
                 title = {
                     Text(
-                        text = stringResource(id = R.string.eRegister),
+                        text = stringResource(id = R.string.fRegister),
                         color = fontMint,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
@@ -120,19 +121,19 @@ fun EssentialsRegisterScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            Spacer(modifier = Modifier.size(24.dp))
             Image(
-                painter = painterResource(id = R.drawable.register_in_cupboard),
+                painter = painterResource(id = R.drawable.register_in_fridge),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(100.dp)
             )
-            Spacer(modifier = Modifier.size(64.dp))
+            Spacer(modifier = Modifier.size(48.dp))
 
             TextField(
-                value = ename,
-                onValueChange = { ename = it },
+                value = fname,
+                onValueChange = { fname = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -149,8 +150,26 @@ fun EssentialsRegisterScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.size(32.dp))
             TextField(
-                value = eplace,
-                onValueChange = { eplace = it },
+                value = expDate,
+                onValueChange = { expDate = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                label = { Text(text = stringResource(id = R.string.checkExpDate)) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = MintWhite,
+                    disabledBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    unfocusedLabelColor = fontMint,
+                    focusedLabelColor = fontMint
+                )
+            )
+            Spacer(modifier = Modifier.size(32.dp))
+            TextField(
+                value = fplace,
+                onValueChange = { fplace = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -167,8 +186,8 @@ fun EssentialsRegisterScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.size(32.dp))
             TextField(
-                value = eprice,
-                onValueChange = { eprice = it },
+                value = fprice,
+                onValueChange = { fprice = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -192,7 +211,7 @@ fun EssentialsRegisterScreen(navController: NavController) {
                     .height(120.dp)
                     .padding(horizontal = 16.dp)
                     .clickable {
-                        viewModel.addEssentials(userEmail, ename, eplace, eprice)
+                        viewModel.addFood(userEmail, fname, expDate, fplace, fprice)
                     }
             )
 

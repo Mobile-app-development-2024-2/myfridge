@@ -5,4 +5,21 @@
     <string name="signup">회원가입</string>
     <string name="signuptext">Already have an account? Sign in!</string>
     <string name="register">등록하기</string>
+
+    <string name="eList">생필품 리스트</string>
+    <string name="eRegister">생필품 직접 입력하기</string>
+    <string name="keepInCupboard">냉장고 보관하기</string>
+
+    <string name="fList">식재료 리스트</string>
+    <string name="fRegister">식재료 직접 입력하기</string>
+    <string name="keepInFridge">냉장고 보관하기</string>
+
+    <string name="whatsName">무슨 물건인가요?</string>
+    <string name="checkExpDate">유통기한이 맞는지 확인해주세요</string>
+    <string name="wheresPlace">업태가 어떻게 되나요?</string>
+    <string name="howsPrice">가격이 얼마인가요?</string>
+
+    <string name="registerNewItem">새로운 물품 등록하기</string>
+    <string name="search">검색어를 입력하세요.</string>
+
 </resources>

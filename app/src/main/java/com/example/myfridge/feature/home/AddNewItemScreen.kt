@@ -1,9 +1,8 @@
 package com.example.myfridge.feature.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,15 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myfridge.R
 import com.example.myfridge.ui.theme.MintBlue
@@ -68,7 +62,7 @@ fun AddNewItemScreen(navController: NavController) {
                 ),
                 title = {
                     Text(
-                        text = "새로운 물품 등록",
+                        text = stringResource(id = R.string.registerNewItem),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -81,84 +75,36 @@ fun AddNewItemScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(16.dp),
+                .padding(it),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Button(
-                onClick = {  },
+            Image(
+                painter = painterResource(id = R.drawable.register_food),
+                contentDescription = null,
                 modifier = Modifier
-                    .size(200.dp)
-                    .graphicsLayer(rotationZ = 15f),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonColors(
-                    contentColor = MintBlue,
-                    containerColor = Color.White,
-                    disabledContentColor = MintBlue,
-                    disabledContainerColor = Color.White
-                )
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_food),
-                        contentDescription = "image description",
-                        modifier = Modifier.size(100.dp)
-                    )
-                    Text(
-                        text = "식재료 등록하기",
-                        color = MintBlue,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            Box(
+                    .size(250.dp)
+                    .clickable {
+                        navController.navigate("foodRegister")
+                    }
+            )
+            Image(
+                painter = painterResource(id = R.drawable.dotted_line),
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(4.dp)
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(Color.Transparent, Color.White, Color.Transparent)
-                        )
-                    )
+                    .height(11.dp)
             )
-
-            Button(
-                onClick = { navController.navigate("essentialsRegister") },
+            Image(
+                painter = painterResource(id = R.drawable.register_essentials),
+                contentDescription = null,
                 modifier = Modifier
-                    .size(200.dp)
-                    .graphicsLayer(rotationZ = -15f),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonColors(
-                    contentColor = MintBlue,
-                    containerColor = Color.White,
-                    disabledContentColor = MintBlue,
-                    disabledContainerColor = Color.White
-                )
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_essentials),
-                        contentDescription = "image description",
-                        modifier = Modifier.size(100.dp)
-                    )
-                    Text(
-                        text = "생필품 등록하기",
-                        color = MintBlue,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
+                    .size(250.dp)
+                    .clickable {
+                        navController.navigate("essentialsRegister")
+                    }
+            )
         }
     }
 }
