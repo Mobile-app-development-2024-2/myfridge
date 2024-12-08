@@ -30,9 +30,9 @@ class EssentialsViewModel @Inject constructor() : ViewModel() {
         val essentials = Essentials(
             id = firebaseDatabase.reference.child("essentials").push().key ?: UUID.randomUUID().toString(),
             userEmail = userEmail,
-            ename = ename,
-            eplace = eplace,
-            eprice = eprice
+            name = ename,
+            place = eplace,
+            price = eprice
         )
         firebaseDatabase.reference.child("essentials").child(essentials.id).setValue(essentials)
             .addOnCompleteListener { task ->

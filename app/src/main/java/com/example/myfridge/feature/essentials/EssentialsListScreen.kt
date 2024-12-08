@@ -117,7 +117,7 @@ fun EssentialsListScreen(navController: NavController) {
             val filteredList = if (searchWhat.isEmpty()) {
                 essentialsList
             } else {
-                essentialsList.filter { it.ename.contains(searchWhat, ignoreCase = true) }
+                essentialsList.filter { it.name.contains(searchWhat, ignoreCase = true) }
             }
 
             LazyColumn(
@@ -150,7 +150,7 @@ fun EssentialsListScreen(navController: NavController) {
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             ) {
                                 Text(
-                                    text = item.ename,
+                                    text = item.name,
                                     color = DeepGreen,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -159,7 +159,7 @@ fun EssentialsListScreen(navController: NavController) {
                                     contentDescription = null
                                 )
                                 Text(
-                                    text = item.eprice + "원에 구매하셨습니다.",
+                                    text = item.price + "원에 구매하셨습니다.",
                                     color = DeepGreen
                                 )
                             }

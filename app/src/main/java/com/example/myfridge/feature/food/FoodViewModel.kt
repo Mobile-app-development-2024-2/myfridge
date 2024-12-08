@@ -30,10 +30,10 @@ class FoodViewModel @Inject constructor() : ViewModel() {
         val food = Food(
             id = firebaseDatabase.reference.child("food").push().key ?: UUID.randomUUID().toString(),
             userEmail = userEmail,
-            fname = fname,
+            name = fname,
             expDate = expDate,
-            fplace = fplace,
-            fprice = fprice
+            place = fplace,
+            price = fprice
         )
 
         firebaseDatabase.reference.child("food").child(food.id).setValue(food)
