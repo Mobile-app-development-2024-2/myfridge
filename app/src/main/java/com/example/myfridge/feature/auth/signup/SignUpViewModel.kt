@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(): ViewModel() {
+class SignUpViewModel @Inject constructor() : ViewModel() {
     private val _state = MutableStateFlow<SignUpState>(SignUpState.Nothing)
     val state = _state.asStateFlow()
 
@@ -16,17 +16,17 @@ class SignUpViewModel @Inject constructor(): ViewModel() {
         _state.value = SignUpState.Loading
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
+                if(task.isSuccessful) {
                     task.result.user?.let {
-                        it.updateProfile(com.google.firebase.auth.UserProfileChangeRequest
-                            .Builder()
-                            .setDisplayName(name)
-                            .build()
+                        it.updateProfile(
+                            com.google.firebase.auth.UserProfileChangeRequest
+                                .Builder()
+                                .setDisplayName(name)
+                                .build()
                         ).addOnCompleteListener {
                             _state.value = SignUpState.Success
                         }
                     }
-                    _state.value = SignUpState.Success
                 } else {
                     _state.value = SignUpState.Error
                 }

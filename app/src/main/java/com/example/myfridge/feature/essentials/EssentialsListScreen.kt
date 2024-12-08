@@ -15,18 +15,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -48,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myfridge.R
+import com.example.myfridge.ui.CustomOutlinedTextField
 import com.example.myfridge.ui.theme.DeepGreen
 import com.example.myfridge.ui.theme.MintWhite
 import com.example.myfridge.ui.theme.fontMint
@@ -72,7 +69,7 @@ fun EssentialsListScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         containerColor = MintWhite,
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -95,24 +92,16 @@ fun EssentialsListScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            TextField(
-                value = searchWhat,
-                onValueChange = { searchWhat = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(20.dp)),
-                label = { Text(text = stringResource(id = R.string.search)) },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
-                    disabledBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    unfocusedLabelColor = fontMint,
-                    focusedLabelColor = fontMint
+            Column (
+                modifier = Modifier.padding(16.dp)
+            ) {
+                CustomOutlinedTextField(
+                    value = searchWhat,
+                    onValueChange = { searchWhat = it },
+                    label = stringResource(id = R.string.search),
+                    fieldColor = Color.White
                 )
-            )
-            Spacer(modifier = Modifier.size(16.dp))
+            }
 
             val filteredList = if (searchWhat.isEmpty()) {
                 essentialsList

@@ -1,6 +1,5 @@
 package com.example.myfridge.feature.home
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -41,7 +40,6 @@ import androidx.navigation.NavController
 import com.example.myfridge.R
 import com.example.myfridge.ui.theme.MintWhite
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -169,7 +167,10 @@ fun ButtonGroup(
                                 popUpTo("home") { inclusive = true }
                             }
 
-                            3 -> navController.navigate("page3")
+                            3 -> navController.navigate("shopList") {
+                                popUpTo("home") { inclusive = true }
+                            }
+
                             4 -> navController.navigate("page4")
                         }
                         onClick(null)

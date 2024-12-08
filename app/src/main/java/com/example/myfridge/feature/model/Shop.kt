@@ -9,7 +9,5 @@ data class Shop(
 
     val name: String = "",
     val place: String = "",
-    val price: String = "",
-
-    val expDate: String = "",
+    val price: String = ""
 )

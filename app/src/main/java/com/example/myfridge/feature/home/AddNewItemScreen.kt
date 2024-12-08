@@ -9,34 +9,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myfridge.R
+import com.example.myfridge.ui.CustomCurvedTopAppBar
 import com.example.myfridge.ui.theme.MintBlue
-import com.example.myfridge.ui.theme.MintWhite
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNewItemScreen(navController: NavController) {
 
@@ -44,31 +31,9 @@ fun AddNewItemScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         containerColor = MintBlue,
         topBar = {
-            TopAppBar(
-                modifier = Modifier.clip(
-                    RoundedCornerShape(
-                        bottomStart = 16.dp,
-                        bottomEnd = 16.dp
-                    )
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("home") }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = topAppBarColors(
-                    containerColor = MintWhite,
-                    titleContentColor = MintBlue
-                ),
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.registerNewItem),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                }
-
+            CustomCurvedTopAppBar(
+                titleText = stringResource(id = R.string.registerNewItem),
+                onNavigationClick = { navController.navigate("home") }
             )
         }
     ) {
