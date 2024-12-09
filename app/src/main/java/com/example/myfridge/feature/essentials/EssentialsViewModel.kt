@@ -1,6 +1,7 @@
 package com.example.myfridge.feature.essentials
 
 import androidx.lifecycle.ViewModel
+import com.example.myfridge.feature.food.FoodState
 import com.example.myfridge.feature.model.Essentials
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -78,6 +79,17 @@ class EssentialsViewModel @Inject constructor() : ViewModel() {
                 override fun onCancelled(error: DatabaseError) {}
             })
 
+    }
+
+    fun deleteEssentials(essentialsId: String) {
+        firebaseDatabase.reference.child("essentials").child(essentialsId).removeValue()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _state.value = EssentialsState.Success
+                } else {
+                    _state.value = EssentialsState.Error
+                }
+            }
     }
 
 }
