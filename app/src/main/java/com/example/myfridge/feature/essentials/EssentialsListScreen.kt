@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -57,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myfridge.R
+import com.example.myfridge.feature.food.priceStringToDouble
 import com.example.myfridge.feature.model.Essentials
 import com.example.myfridge.feature.shop.ShopViewModel
 import com.example.myfridge.ui.CustomOutlinedTextField
@@ -64,6 +67,7 @@ import com.example.myfridge.ui.theme.DeepGreen
 import com.example.myfridge.ui.theme.MintWhite
 import com.example.myfridge.ui.theme.fontMint
 import com.google.firebase.auth.FirebaseAuth
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,6 +90,20 @@ fun EssentialsListScreen(navController: NavController) {
     var searchWhat by remember { mutableStateOf("") }
     var selectedEssentials by remember { mutableStateOf<Essentials?>(null) }
     var isDetailVisible by remember { mutableStateOf(false) }
+    var averagePrice by remember { mutableStateOf(0) }
+
+    if(essentialsList.isNotEmpty()) {
+        var sumPrice = 0
+        essentialsList.forEach { food->
+            val cleanedPrice =
+                food.price
+                    .replace(",", "")
+                    .replace(".","")
+                    .replace(" ", "")
+            sumPrice += cleanedPrice.toInt()
+        }
+        averagePrice = (sumPrice.toDouble() / essentialsList.size.toDouble()).toInt()
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -209,7 +227,7 @@ fun EssentialsListScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .width(300.dp)
-                        .height(650.dp)
+                        .height(700.dp)
                         .background(Color.White)
                         .padding(16.dp)
                 ) {
@@ -225,7 +243,7 @@ fun EssentialsListScreen(navController: NavController) {
                             )
                         }
                         Image(
-                            painter = painterResource(id = R.drawable.logo_food),
+                            painter = painterResource(id = R.drawable.logo_essentials),
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -233,10 +251,14 @@ fun EssentialsListScreen(navController: NavController) {
                                 .graphicsLayer(
                                     rotationZ = 15f
                                 )
+                                .sizeIn(
+                                    maxWidth = 70.dp,
+                                    maxHeight = 70.dp
+                                )
                         )
                     }
                     Text(
-                        text = selectedEssentials!!.name + "\n가성비 알아보기",
+                        text = selectedEssentials!!.name + "\n소비척도 알아보기",
                         style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.End,
                         modifier = Modifier.fillMaxWidth(),
@@ -276,14 +298,21 @@ fun EssentialsListScreen(navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "0원",
+                            text = "평균 소비보다",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color(0xFF00B4A9),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                        )
+                        Text(
+                            text = "${String.format("%,d", abs(averagePrice - priceStringToDouble(selectedEssentials!!.price)).toInt())}원",
                             style = MaterialTheme.typography.titleLarge,
                             color = DeepGreen,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
                         )
                         Text(
-                            text = "저렴하게 구매했습니다",
+                            text = if(averagePrice >= priceStringToDouble(selectedEssentials!!.price)) "더 적게 소비했습니다" else "더 많이 소비했습니다",
                             style = MaterialTheme.typography.titleMedium,
                             color = Color(0xFF00B4A9),
                             fontWeight = FontWeight.Bold,
@@ -328,7 +357,7 @@ fun EssentialsListScreen(navController: NavController) {
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        text = "가성비 가격",
+                        text = "내 소비 평균",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color(0xFF00B4A9),
                         textAlign = TextAlign.End,
@@ -336,7 +365,7 @@ fun EssentialsListScreen(navController: NavController) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "${selectedEssentials!!.price}원",
+                        text = "${String.format("%,d", averagePrice.toInt())}원",
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(color = MintWhite)
@@ -383,6 +412,14 @@ fun EssentialsListScreen(navController: NavController) {
             }
         }
     }
+}
+
+fun priceStringToDouble(price: String): Double {
+    return price
+        .replace(",", "")
+        .replace(".","")
+        .replace(" ", "")
+        .toDouble()
 }
 
 @Preview(showBackground = true, showSystemUi = true)

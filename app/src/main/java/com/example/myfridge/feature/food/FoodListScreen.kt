@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -66,6 +67,7 @@ import com.example.myfridge.ui.theme.DeepGreen
 import com.example.myfridge.ui.theme.MintWhite
 import com.example.myfridge.ui.theme.fontMint
 import com.google.firebase.auth.FirebaseAuth
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,6 +90,20 @@ fun FoodListScreen(navController: NavController) {
     var searchWhat by remember { mutableStateOf("") }
     var selectedFood by remember { mutableStateOf<Food?>(null) }
     var isDetailVisible by remember { mutableStateOf(false) }
+    var averagePrice by remember { mutableStateOf(0) }
+
+    if(foodList.isNotEmpty()) {
+        var sumPrice = 0
+        foodList.forEach { food->
+            val cleanedPrice =
+                food.price
+                    .replace(",", "")
+                    .replace(".","")
+                    .replace(" ", "")
+            sumPrice += cleanedPrice.toInt()
+        }
+        averagePrice = (sumPrice.toDouble() / foodList.size.toDouble()).toInt()
+    }
 
     val filteredList = if (searchWhat.isEmpty()) {
         foodList
@@ -231,7 +247,7 @@ fun FoodListScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .width(300.dp)
-                        .height(650.dp)
+                        .height(700.dp)
                         .background(Color.White)
                         .padding(16.dp)
                 ) {
@@ -258,7 +274,7 @@ fun FoodListScreen(navController: NavController) {
                         )
                     }
                     Text(
-                        text = selectedFood!!.name + "\n가성비 알아보기",
+                        text = selectedFood!!.name + "\n소비척도 알아보기",
                         style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.End,
                         modifier = Modifier.fillMaxWidth(),
@@ -298,14 +314,21 @@ fun FoodListScreen(navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "0원",
+                            text = "평균 소비보다",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color(0xFF00B4A9),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                        )
+                        Text(
+                            text = "${abs(averagePrice - priceStringToDouble(selectedFood!!.price))}원",
                             style = MaterialTheme.typography.titleLarge,
                             color = DeepGreen,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
                         )
                         Text(
-                            text = "저렴하게 구매했습니다",
+                            text = if(averagePrice >= priceStringToDouble(selectedFood!!.price)) "더 적게 소비했습니다" else "더 많이 소비했습니다",
                             style = MaterialTheme.typography.titleMedium,
                             color = Color(0xFF00B4A9),
                             fontWeight = FontWeight.Bold,
@@ -350,7 +373,7 @@ fun FoodListScreen(navController: NavController) {
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        text = "가성비 가격",
+                        text = "내 소비 평균",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color(0xFF00B4A9),
                         textAlign = TextAlign.End,
@@ -358,7 +381,7 @@ fun FoodListScreen(navController: NavController) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "${selectedFood!!.price}원",
+                        text = "${averagePrice}원",
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(color = MintWhite)
@@ -404,6 +427,14 @@ fun FoodListScreen(navController: NavController) {
             }
         }
     }
+}
+
+fun priceStringToDouble(price: String): Double {
+    return price
+        .replace(",", "")
+        .replace(".","")
+        .replace(" ", "")
+        .toDouble()
 }
 
 @Preview(showBackground = true, showSystemUi = true)
