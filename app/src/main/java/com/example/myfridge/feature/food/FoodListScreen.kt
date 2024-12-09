@@ -358,7 +358,7 @@ fun FoodListScreen(navController: NavController) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "0원",
+                        text = "${selectedFood!!.price}원",
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(color = MintWhite)

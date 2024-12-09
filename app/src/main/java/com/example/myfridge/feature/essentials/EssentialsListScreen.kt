@@ -336,7 +336,7 @@ fun EssentialsListScreen(navController: NavController) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "0원",
+                        text = "${selectedEssentials!!.price}원",
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(color = MintWhite)
