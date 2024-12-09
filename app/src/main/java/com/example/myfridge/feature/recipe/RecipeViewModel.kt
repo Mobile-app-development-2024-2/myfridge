@@ -3,8 +3,6 @@ package com.example.myfridge.feature.recipe
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myfridge.feature.model.Recipe
-import com.google.gson.GsonBuilder
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -15,32 +13,31 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
-import javax.inject.Inject
 
-@HiltViewModel
-class RecipeViewModel @Inject constructor() : ViewModel() {
-    private val _recipeList = MutableStateFlow<List<Recipe>>(emptyList())
-    val recipeList: StateFlow<List<Recipe>> get() = _recipeList
-
-    private val location = "us-central1"
-    private val projectId = "" // Add your project ID
-    private val baseUrl =
-        "https://$location-aiplatform.googleapis.com/v1/projects/$projectId/locations/$location/publishers/google/models:generateContent"
-
+class RecipeViewModel : ViewModel() {
     private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+        .baseUrl("https://us-central1-aiplatform.googleapis.com/") // Vertex AI API의 기본 URL
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     private val service = retrofit.create(GeminiApiService::class.java)
 
+    // StateFlow로 변경하여 collect를 사용하도록 수정
+    private val _recipeList = MutableStateFlow<List<Recipe>>(emptyList())
+    val recipeList: StateFlow<List<Recipe>> get() = _recipeList
+
+    private val _result = MutableStateFlow<String?>(null)
+    val result: StateFlow<String?> get() = _result
+
+    // Fetch recipes by calling the generateText function
     fun fetchRecipes() {
         generateText(
-            apiKey = "your-api-key",
+            apiKey = "AIzaSyCt7jWP5g1hswB8qe1RML7tYJjej2dsTj4",
             prompt = "재료를 기반으로 레시피를 생성합니다.",
             model = "Gemini-1.5-flash-002"
         )
 
+        // StateFlow에서 collect를 사용하여 결과를 처리
         viewModelScope.launch {
             result.collect { response ->
                 val recipes = parseRecipes(response ?: "")
@@ -49,20 +46,18 @@ class RecipeViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private val _result = MutableStateFlow<String?>(null)
-    val result: StateFlow<String?> get() = _result
-
+    // Function to generate text using Vertex AI
     fun generateText(apiKey: String, prompt: String, model: String) {
         viewModelScope.launch {
             val requestBody = RequestBody.create(
                 MediaType.parse("application/json"),
                 """
-              {
-                "model": "$model",
-                "prompt": "$prompt",
-                "apiKey": "$apiKey"
-              }
-            """.trimIndent()
+                {
+                    "model": "$model",
+                    "prompt": "$prompt",
+                    "apiKey": "$apiKey"
+                }
+                """.trimIndent()
             )
 
             try {
@@ -74,6 +69,7 @@ class RecipeViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    // Function to parse the generated response into a list of recipes
     private fun parseRecipes(response: String): List<Recipe> {
         return try {
             val recipeList = mutableListOf<Recipe>()
@@ -93,6 +89,7 @@ class RecipeViewModel @Inject constructor() : ViewModel() {
     }
 }
 
+// Define the API service interface
 interface GeminiApiService {
     @POST("v1/languages:generateText")
     suspend fun generateText(@Body requestBody: RequestBody): ResponseBody
