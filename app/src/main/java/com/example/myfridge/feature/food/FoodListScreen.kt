@@ -365,8 +365,7 @@ fun FoodListScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            // sortedFoodList = sortedFoodList.filter { it != selectedFood }
-                            // todo : viewModel을 통해 삭제
+                            viewModel.deleteFood(selectedFood!!.id)
                             isDetailVisible = false
                         },
                         colors = ButtonDefaults.buttonColors(

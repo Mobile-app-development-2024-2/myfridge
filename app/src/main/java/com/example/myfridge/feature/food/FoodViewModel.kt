@@ -2,6 +2,7 @@ package com.example.myfridge.feature.food
 
 import androidx.lifecycle.ViewModel
 import com.example.myfridge.feature.model.Food
+import com.example.myfridge.feature.shop.ShopState
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -81,6 +82,17 @@ class FoodViewModel @Inject constructor() : ViewModel() {
                 override fun onCancelled(error: DatabaseError) {}
             })
 
+    }
+
+    fun deleteFood(foodId: String) {
+        firebaseDatabase.reference.child("food").child(foodId).removeValue()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _state.value = FoodState.Success
+                } else {
+                    _state.value = FoodState.Error
+                }
+            }
     }
 
 }
