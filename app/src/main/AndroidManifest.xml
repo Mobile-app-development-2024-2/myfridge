@@ -13,6 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFridge"
         tools:targetApi="31">
+        <!-- meta-data of google barcode scanner -->
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="barcode_ui"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

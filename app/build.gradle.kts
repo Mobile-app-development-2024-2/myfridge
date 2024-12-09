@@ -75,6 +75,9 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+
+    // google barcode scanner
+    implementation(libs.play.services.code.scanner)
 }
 
 kapt {
