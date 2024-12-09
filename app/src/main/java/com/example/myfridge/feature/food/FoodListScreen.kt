@@ -42,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -223,7 +224,7 @@ fun FoodListScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .width(300.dp)
-                        .height(600.dp)
+                        .height(700.dp)
                         .background(Color.White)
                         .padding(16.dp)
                 ) {
@@ -252,6 +253,7 @@ fun FoodListScreen(navController: NavController) {
                         textAlign = TextAlign.End,
                         modifier = Modifier.fillMaxWidth(),
                         fontWeight = FontWeight.Bold,
+                        color = DeepGreen
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Image(
@@ -267,27 +269,35 @@ fun FoodListScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth()
                             .padding(16.dp)
+                            .shadow(
+                                elevation = 4.dp,
+                                shape = RoundedCornerShape(16.dp),
+                                ambientColor = Color.Gray,
+                                spotColor = Color.Black
+                            )
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White)
                             .border(
                                 width = 4.dp,
                                 color = Color(0xFF01D1C4),
                                 shape = RoundedCornerShape(16.dp)
                             )
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White),
+                            .fillMaxWidth(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = "0원",
                             style = MaterialTheme.typography.titleLarge,
+                            color = DeepGreen,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
                         )
                         Text(
                             text = "저렴하게 구매했습니다",
                             style = MaterialTheme.typography.titleMedium,
+                            color = Color(0xFF00B4A9),
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                         )
@@ -307,6 +317,7 @@ fun FoodListScreen(navController: NavController) {
                     Text(
                         text = "내가 구매한 가격",
                         style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFF00B4A9),
                         textAlign = TextAlign.End,
                         modifier = Modifier.fillMaxWidth().padding(4.dp),
                         fontWeight = FontWeight.Bold
@@ -328,6 +339,7 @@ fun FoodListScreen(navController: NavController) {
                     Text(
                         text = "가성비 가격",
                         style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFF00B4A9),
                         textAlign = TextAlign.End,
                         modifier = Modifier.fillMaxWidth().padding(4.dp),
                         fontWeight = FontWeight.Bold
@@ -366,7 +378,10 @@ fun FoodListScreen(navController: NavController) {
                         ),
                         shape = RoundedCornerShape(4.dp)
                     ) {
-                        Text(text = "장보기로 이동")
+                        Text(
+                            text = "장보기로 이동",
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
