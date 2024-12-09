@@ -58,6 +58,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myfridge.R
 import com.example.myfridge.feature.model.Essentials
+import com.example.myfridge.feature.shop.ShopViewModel
 import com.example.myfridge.ui.CustomOutlinedTextField
 import com.example.myfridge.ui.theme.DeepGreen
 import com.example.myfridge.ui.theme.MintWhite
@@ -74,6 +75,11 @@ fun EssentialsListScreen(navController: NavController) {
     val viewModel: EssentialsViewModel = hiltViewModel()
     LaunchedEffect(key1 = true) {
         viewModel.listenForEssentials(userEmail)
+    }
+
+    val shopViewModel: ShopViewModel = hiltViewModel()
+    LaunchedEffect(key1 = true) {
+        shopViewModel.listenForShop(userEmail)
     }
 
     val essentialsList by viewModel.essentialsList.collectAsState(emptyList())
@@ -357,7 +363,9 @@ fun EssentialsListScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(8.dp))
                     /** todo */
                     Button(
-                        onClick = { /** todo */ },
+                        onClick = { shopViewModel.addShop(
+                            userEmail, selectedEssentials!!.name, selectedEssentials!!.place, selectedEssentials!!.price, eorf = true
+                        ) },
                         modifier = Modifier
                             .fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
