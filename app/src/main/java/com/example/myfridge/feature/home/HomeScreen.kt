@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myfridge.R
+import com.example.myfridge.feature.food.FoodViewModel
+import com.example.myfridge.feature.recipe.RecipeViewModel
 import com.example.myfridge.ui.theme.MintWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,6 +47,32 @@ import com.example.myfridge.ui.theme.MintWhite
 fun HomeScreen(navController: NavController) {
     val viewModel = hiltViewModel<HomeViewModel>()
     val uiState = viewModel.state.collectAsState()
+
+    val foodViewModel = hiltViewModel<FoodViewModel>()
+    val recipeViewModel = hiltViewModel<RecipeViewModel>()
+
+    // Fetch food list from FoodViewModel
+    val foodList by foodViewModel.foodList.collectAsState()
+
+    // Extract ingredients (names of the food items)
+    val ingredient1 = foodList.getOrNull(0)?.name ?: ""  // Use the first food item as ingredient1
+    val ingredient2 = foodList.getOrNull(1)?.name ?: ""  // Use the second food item as ingredient2
+    val recipeCount = 3 // Example count, you can set this dynamically
+
+    // Fetch recipes when the food list changes
+    LaunchedEffect(key1 = foodList) {
+        if (ingredient1.isNotEmpty() && ingredient2.isNotEmpty()) {
+            println("Ingredients to fetch: $ingredient1, $ingredient2") // 디버깅 로그
+            recipeViewModel.fetchRecipes(ingredient1, ingredient2, recipeCount)
+        }
+    }
+
+    val recipeList by recipeViewModel.recipeList.collectAsState()
+    val isLoading by recipeViewModel.isLoading.collectAsState()
+
+    LaunchedEffect(key1 = recipeList) {
+        // You can add additional logic here to handle new recipe updates
+    }
 
     LaunchedEffect(key1 = uiState.value) {
         if (uiState.value == SignOutState.LoggedOut) {

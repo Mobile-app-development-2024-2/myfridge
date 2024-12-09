@@ -14,7 +14,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-
 class RecipeViewModel : ViewModel() {
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://us-central1-aiplatform.googleapis.com/") // Vertex AI API's base URL
@@ -37,21 +36,26 @@ class RecipeViewModel : ViewModel() {
 
     // Fetch recipes by calling the generateText function with ingredients as input
     fun fetchRecipes(ingredient1: String, ingredient2: String, recipeCount: Int) {
-        val promptTemplate = "%s과 %s를 재료로 하는 요리 %d개를 추천해줘. 총 조리 시간은 최대 30분으로 해. " +
-                "레시피 이름을 첫 번째로 제시하고, 두 번째로 재료와 각 재료의 양을 나열해. " +
-                "마지막에는 요리 방법을 단계마다 숫자를 붙여서 각 조리 시간과 함께 나열해줘."
+        if (ingredient1.isNotEmpty() && ingredient2.isNotEmpty()) {
+            val promptTemplate = "%s과 %s를 재료로 하는 요리 %d개를 추천해줘. 총 조리 시간은 최대 30분으로 해. " +
+                    "레시피 이름을 첫 번째로 제시하고, 두 번째로 재료와 각 재료의 양을 나열해. " +
+                    "마지막에는 요리 방법을 단계마다 숫자를 붙여서 각 조리 시간과 함께 나열해줘."
 
-        val prompt = promptTemplate.format(ingredient1, ingredient2, recipeCount)
-        println("Fetching recipes for ingredients: $ingredient1, $ingredient2") // 디버깅 로그
+            val prompt = promptTemplate.format(ingredient1, ingredient2, recipeCount)
+            println("Fetching recipes for ingredients: $ingredient1, $ingredient2") // 디버깅 로그
 
-        // Start loading
-        _isLoading.value = true
+            // Start loading
+            _isLoading.value = true
 
-        generateText(
-            apiKey = "AIzaSyCt7jWP5g1hswB8qe1RML7tYJjej2dsTj4", // API Key should be stored securely
-            prompt = prompt,
-            model = "Gemini-1.5-flash-002"
-        )
+            generateText(
+                apiKey = "AIzaSyCt7jWP5g1hswB8qe1RML7tYJjej2dsTj4", // API Key should be stored securely
+                prompt = prompt,
+                model = "Gemini-1.5-flash-002"
+            )
+        } else {
+            println("Ingredients are empty or insufficient") // 디버깅 로그
+            setSampleData() // If ingredients are empty, use sample data
+        }
     }
 
     private fun generateText(apiKey: String, prompt: String, model: String) {
@@ -88,12 +92,8 @@ class RecipeViewModel : ViewModel() {
             val recipeList = mutableListOf<Recipe>()
             val recipes = it.split("\n\n")
             for (recipeText in recipes) {
-                val lines = recipeText.split("\n")
-                if (lines.size >= 2) {
-                    val name = lines[0]
-                    val description = lines.subList(1, lines.size).joinToString("\n")
-                    recipeList.add(Recipe(name, description))
-                }
+                // Use the whole recipeText as description
+                recipeList.add(Recipe(ingredient1 = "ingredient1", ingredient2 = "ingredient2", description = recipeText))
             }
             if (recipeList.isEmpty()) {
                 // If no valid recipes are parsed, set sample data
@@ -108,20 +108,24 @@ class RecipeViewModel : ViewModel() {
         }
     }
 
+
     // Set sample data when there is no valid recipe data
     private fun setSampleData() {
         _recipeList.value = listOf(
             Recipe(
-                name = "Scrambled Eggs",
-                description = "A simple recipe for scrambled eggs with ingredient1 and ingredient2."
+                ingredient1 = "egg",
+                ingredient2 = "tomato",
+                description = "A simple recipe for scrambled eggs with egg and tomato."
             ),
             Recipe(
-                name = "Egg Salad",
-                description = "A delicious salad made with ingredient1 and ingredient2."
+                ingredient1 = "egg",
+                ingredient2 = "cheese",
+                description = "A delicious egg salad made with egg and cheese."
             ),
             Recipe(
-                name = "Tomato Soup",
-                description = "A rich and creamy tomato soup with ingredient1 and ingredient2."
+                ingredient1 = "tomato",
+                ingredient2 = "cheese",
+                description = "A rich tomato soup made with tomato and cheese."
             )
         )
         _isLoading.value = false // Set loading to false
@@ -133,6 +137,7 @@ class RecipeViewModel : ViewModel() {
         _selectedRecipe.value = recipe
     }
 }
+
 
 
 // Define the API service interface

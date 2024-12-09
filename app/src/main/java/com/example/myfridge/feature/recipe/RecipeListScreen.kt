@@ -27,7 +27,6 @@ import com.example.myfridge.ui.theme.MintWhite
 import com.example.myfridge.ui.theme.fontMint
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeListScreen(navController: NavController) {
@@ -39,15 +38,17 @@ fun RecipeListScreen(navController: NavController) {
     val foodList by foodViewModel.foodList.collectAsState()
 
     // Extract ingredients (names of the food items)
-    val ingredient1 = foodList.getOrNull(0)?.name ?: ""  // Use the first food item as ingredient1
-    val ingredient2 = foodList.getOrNull(1)?.name ?: ""  // Use the second food item as ingredient2
+    val ingredient1 = foodList.getOrNull(0)?.name ?: "apple"  // Use the first food item as ingredient1
+    val ingredient2 = foodList.getOrNull(1)?.name ?: "banana"  // Use the second food item as ingredient2
     val recipeCount = 3 // Example count, you can set this dynamically
 
-    // Fetch recipes when the food list changes
+    // Fetch recipes when the food list changes and both ingredients are not empty
     LaunchedEffect(key1 = foodList) {
         if (ingredient1.isNotEmpty() && ingredient2.isNotEmpty()) {
             println("Ingredients to fetch: $ingredient1, $ingredient2") // 디버깅 로그
             recipeViewModel.fetchRecipes(ingredient1, ingredient2, recipeCount)
+        } else {
+            println("Ingredients are empty or insufficient") // 디버깅 로그
         }
     }
 
@@ -113,9 +114,9 @@ fun RecipeListScreen(navController: NavController) {
                     val displayedRecipes = if (recipeList.isEmpty()) {
                         // Show sample data if no recipes available
                         listOf(
-                            Recipe("Scrambled Eggs", "A simple recipe for scrambled eggs."),
-                            Recipe("Egg Salad", "A delicious egg salad with various ingredients."),
-                            Recipe("Tomato Soup", "A rich tomato soup perfect for a quick meal.")
+                            Recipe("Apple", "Banana", "Scrambled Eggs: A simple recipe for scrambled eggs with apple and banana."),
+                            Recipe("Apple", "Banana", "Egg Salad: A delicious egg salad with apple and banana."),
+                            Recipe("Apple", "Banana", "Tomato Soup: A rich tomato soup with apple and banana.")
                         )
                     } else {
                         recipeList
@@ -131,6 +132,7 @@ fun RecipeListScreen(navController: NavController) {
         }
     }
 }
+
 
 @Composable
 fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
@@ -158,7 +160,7 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = recipe.name,
+                    text = recipe.ingredient1 + " and " + recipe.ingredient2,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
