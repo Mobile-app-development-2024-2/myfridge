@@ -22,20 +22,41 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myfridge.R
+import com.example.myfridge.feature.food.FoodViewModel
 import com.example.myfridge.ui.theme.MintWhite
 import com.example.myfridge.ui.theme.fontMint
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeListScreen(navController: NavController) {
 
-    val viewModel: RecipeViewModel = hiltViewModel()
+    val foodViewModel: FoodViewModel = hiltViewModel()
+    val recipeViewModel: RecipeViewModel = hiltViewModel()
 
-    LaunchedEffect(key1 = true) {
-        viewModel.fetchRecipes()
+    // Fetch food list from FoodViewModel
+    val foodList by foodViewModel.foodList.collectAsState()
+
+    // Extract ingredients (names of the food items)
+    val ingredient1 = foodList.getOrNull(0)?.name ?: ""  // Use the first food item as ingredient1
+    val ingredient2 = foodList.getOrNull(1)?.name ?: ""  // Use the second food item as ingredient2
+    val recipeCount = 3 // Example count, you can set this dynamically
+
+    // Fetch recipes when the food list changes
+    LaunchedEffect(key1 = foodList) {
+        if (ingredient1.isNotEmpty() && ingredient2.isNotEmpty()) {
+            println("Ingredients to fetch: $ingredient1, $ingredient2") // 디버깅 로그
+            recipeViewModel.fetchRecipes(ingredient1, ingredient2, recipeCount)
+        }
     }
 
-    val recipeList by viewModel.recipeList.collectAsState()
+    val recipeList by recipeViewModel.recipeList.collectAsState()
+    val selectedRecipe by recipeViewModel.selectedRecipe.collectAsState() // 선택된 레시피 텍스트 상태
+    val isLoading by recipeViewModel.isLoading.collectAsState() // 로딩 상태 관찰
+
+    // Check if recipeList is updated
+    println("Recipe List: $recipeList") // 디버깅 로그
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -59,29 +80,66 @@ fun RecipeListScreen(navController: NavController) {
             )
         }
     ) {
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(it)
         ) {
-            items(recipeList) { recipe ->
-                RecipeCard(recipe = recipe)
+            // 로딩 중이면 로딩 UI 표시
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center)
+                )
+            } else {
+                // 선택된 레시피 텍스트 표시
+                selectedRecipe?.let {
+                    Text(
+                        text = it.description, // 상세 텍스트 표시
+                        modifier = Modifier.padding(16.dp),
+                        color = Color.Black
+                    )
+                }
+
+                // LazyColumn for displaying recipes
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Display recipes, if no recipes exist, show sample data
+                    val displayedRecipes = if (recipeList.isEmpty()) {
+                        // Show sample data if no recipes available
+                        listOf(
+                            Recipe("Scrambled Eggs", "A simple recipe for scrambled eggs."),
+                            Recipe("Egg Salad", "A delicious egg salad with various ingredients."),
+                            Recipe("Tomato Soup", "A rich tomato soup perfect for a quick meal.")
+                        )
+                    } else {
+                        recipeList
+                    }
+
+                    items(displayedRecipes) { recipe ->
+                        RecipeCard(recipe = recipe, onClick = {
+                            recipeViewModel.selectRecipe(recipe) // 클릭된 레시피 상태 업데이트
+                        })
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun RecipeCard(recipe: Recipe) {
+fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
             .padding(8.dp)
-            .clickable {
-                // 상세 레시피 화면으로 이동하는 로직 구현
-            },
+            .clickable { onClick() }, // 클릭 시 onClick 호출
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
