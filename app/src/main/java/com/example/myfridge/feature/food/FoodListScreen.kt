@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
@@ -224,7 +225,7 @@ fun FoodListScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .width(300.dp)
-                        .height(700.dp)
+                        .height(650.dp)
                         .background(Color.White)
                         .padding(16.dp)
                 ) {
@@ -245,6 +246,9 @@ fun FoodListScreen(navController: NavController) {
                             modifier = Modifier
                                 .padding(vertical = 5.dp, horizontal = 10.dp)
                                 .align(Alignment.CenterVertically)
+                                .graphicsLayer(
+                                    rotationZ = 15f
+                                )
                         )
                     }
                     Text(
@@ -328,6 +332,9 @@ fun FoodListScreen(navController: NavController) {
                             .fillMaxWidth()
                             .background(color = MintWhite)
                             .padding(8.dp),
+                        color = DeepGreen,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.End
                     )
                     Text(
@@ -350,6 +357,9 @@ fun FoodListScreen(navController: NavController) {
                             .fillMaxWidth()
                             .background(color = MintWhite)
                             .padding(8.dp),
+                        color = DeepGreen,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.End
                     )
                     Spacer(modifier = Modifier.height(16.dp))
