@@ -7,9 +7,3 @@
 
 ![image](https://github.com/user-attachments/assets/f6658996-6b83-4e2a-a10c-cc821b44b039) | ![image](https://github.com/user-attachments/assets/a01b00a1-22d5-462f-8278-6181b829ebf2) | ![image](https://github.com/user-attachments/assets/f600cbd7-1952-43fc-949f-fc421bb5a3ed) | ![image](https://github.com/user-attachments/assets/cf615417-7cff-4dd7-b01f-690cc2dfa81d)
 ---|---|---|---|
-
-## Teammate
-- 문벼리
-- 김도엽
-- 주예린
-- 최유경
